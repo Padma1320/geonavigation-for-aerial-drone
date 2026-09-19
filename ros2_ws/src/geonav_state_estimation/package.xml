@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>geonav_state_estimation</name>
+
+  <version>0.0.1</version>
+
+  <description>
+    GeoNav-AI ROS2 EKF sensor fusion and state estimation package.
+  </description>
+
+  <maintainer email="padma@todo.todo">
+    padma
+  </maintainer>
+
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>px4_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+
+  <depend>eigen3_cmake_module</depend>
+
+  <build_depend>eigen</build_depend>
+  <exec_depend>eigen</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>

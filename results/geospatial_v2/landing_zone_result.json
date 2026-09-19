@@ -1,0 +1,13 @@
+{
+    "accepted": true,
+    "image_width": 512,
+    "image_height": 512,
+    "source_image": "/home/padma/Downloads/kagera_1.tif",
+    "x": 198,
+    "y": 48,
+    "score": 0.8605220317840576,
+    "safe_probability": 0.6106318831443787,
+    "clearance_pixels": 65.1969223022461,
+    "predicted_class": 1,
+    "class_name": "bareland"
+}

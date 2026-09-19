@@ -1,0 +1,89 @@
+# ============================================
+# GeoNav-AI Git Ignore
+# ============================================
+
+# ROS 2 generated directories
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# External repositories/dependencies
+PX4-Autopilot/
+ros2_ws/src/px4_msgs/
+ros2_ws/src/Micro-XRCE-DDS-Agent/
+
+# Python generated files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Python environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# PX4 flight logs
+*.ulg
+
+# ROS bags
+*.db3
+*.mcap
+
+# Large datasets
+datasets/*
+!datasets/README.md
+
+# Large trained models
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*.ckpt
+
+# Isaac Sim / Omniverse cache
+.cache/
+ov/
+kit/cache/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+# OpenEarthMap training/validation/test dataset
+geospatial/data/openearthmap_geonav/
+
+# Keep only the small demonstration sample
+# geospatial/data/openearthmap_sample/ remains tracked
+# ==================================================
+# GeoNav large geospatial datasets - DO NOT COMMIT
+# ==================================================
+
+# Original OpenEarthMap dataset
+geospatial/data/openearthmap_geonav/
+
+# Generated 512px OpenEarthMap train/val/test dataset
+geospatial/data/openearthmap_geonav_512/
+
+# Downloaded/generated dataset archives
+geospatial/data/openearthmap_geonav_512.zip
+geospatial/data/*.zip
+# Local Python virtual environments
+.venv/
+**/.venv/
+
+# Trained model weights / checkpoints
+models/**/*.pth
+models/**/*.pt
+models/**/*.ckpt
+models/**/*.onnx
