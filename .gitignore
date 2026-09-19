@@ -87,3 +87,5 @@ models/**/*.pth
 models/**/*.pt
 models/**/*.ckpt
 models/**/*.onnx
+# External OpenEarthMap source repository
+geospatial/openearthmap_repo/
