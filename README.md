@@ -1,135 +1,152 @@
-# GeoNav-AI: Geospatial-Aware Autonomous UAV Navigation
+# GeoNav-AI: Geospatial Intelligence for Autonomous UAV Navigation
 
-GeoNav-AI is an autonomous UAV navigation project integrating **geospatial intelligence, computer vision, LiDAR perception, state estimation, path planning, and PX4 flight control** using ROS 2.
+**ROS 2 · PX4 · Gazebo · Geospatial AI · LiDAR Perception · State Estimation · Path Planning · Autonomous Systems**
 
-The system connects satellite and geospatial analysis with real-time robotic autonomy. Geospatial data is processed to identify suitable mission and landing regions, while the onboard autonomy stack performs perception, localization, path planning, and mission execution in simulation.
+GeoNav-AI is an **in-development autonomous UAV navigation system** that connects geospatial intelligence with a ROS 2 / PX4 autonomy stack.
 
----
+The project explores how information extracted from satellite and geospatial imagery can be converted into actionable navigation goals for an autonomous vehicle. A selected landing region is transferred into the robotic autonomy pipeline, where perception, state estimation, path planning, mission control, and PX4 flight execution are integrated in simulation.
 
-##  Project Overview
-
-GeoNav-AI combines two major autonomy layers:
-
-### Geospatial Intelligence
-
-Satellite and aerial imagery are processed to understand the environment and identify suitable UAV mission and landing regions.
-
-The pipeline includes:
-
-- Sentinel-2 multispectral imagery
-- OpenEarthMap semantic data
-- NDVI vegetation analysis
-- NDWI water analysis
-- Land-cover analysis
-- Semantic segmentation
-- Landing-zone candidate detection
-- Landing-zone selection
-- Geospatial mission-goal generation
-
-### Autonomous UAV Navigation
-
-The selected geospatial goal is transferred to the ROS 2 autonomy stack, where the UAV performs perception, state estimation, planning, and flight control.
-
-The navigation pipeline includes:
-
-- LiDAR perception
-- Occupancy-grid generation
-- IMU/GNSS state estimation
-- A* path planning
-- Waypoint and mission generation
-- PX4 offboard control
-- Gazebo-based UAV simulation
+> **Project Status:** In Development  
+> **Validation Environment:** PX4 SITL + Gazebo Sim
 
 ---
 
-##  System Architecture
+## Demo
+
+The latest portfolio demonstration is included in this repository:
+
+### [`GeoNav_AI_Portfolio_Demo.mp4`](./GeoNav_AI_Portfolio_Demo.mp4)
+
+The demo presents the integrated GeoNav-AI workflow using the current simulation and autonomy stack.
+
+---
+
+# System Overview
+
+GeoNav-AI connects two major layers:
+
+### 1. Geospatial Intelligence
+
+Remote-sensing and semantic information are processed to identify suitable mission and landing regions.
+
+### 2. Autonomous UAV Navigation
+
+The selected geospatial goal is transferred into a ROS 2 autonomy stack responsible for perception, planning, mission execution, and PX4 flight control.
+
+The resulting pipeline is:
 
 ```text
 Satellite / Geospatial Data
-          |
-          v
-Sentinel-2 + OpenEarthMap
-          |
-          v
-Geospatial AI Processing
-  ├── NDVI / NDWI
-  ├── Land-Cover Analysis
-  ├── Semantic Segmentation
-  └── Landing-Zone Selection
-          |
-          v
-Geospatial Mission Goal
-          |
-          v
+            |
+            v
+Geospatial Intelligence
+            |
+            v
+Semantic Terrain Understanding
+            |
+            v
+Landing-Zone Selection
+            |
+            v
+AI-Selected Mission Goal
+            |
+            v
 ROS 2 Geospatial Bridge
-          |
-          v
-+--------------------------------------+
-|        UAV AUTONOMY STACK            |
-|                                      |
-| LiDAR -------> Occupancy Grid        |
-|                     |                |
-|                     v                |
-|                A* Planner            |
-|                     |                |
-|                     v                |
-|              Planned Mission         |
-|                     |                |
-|                     v                |
-|             PX4 Offboard Control     |
-|                     |                |
-|                     v                |
-|                PX4 SITL UAV          |
-|                                      |
-| IMU / GNSS ---> State Estimation     |
-|                    (EKF)             |
-+--------------------------------------+
-          |
-          v
-     Gazebo Simulation
+            |
+            v
+/geonav/goal
+            |
+            v
+Occupancy Representation
+            |
+            v
+       A* Planner
+            |
+            v
+/geonav/planned_path
+            |
+            v
+Mission Controller
+            |
+            v
+PX4 Offboard Commands
+            |
+            v
+       PX4 SITL
+            |
+            v
+      Gazebo UAV
 ```
+
+This creates a connection between **remote-sensing intelligence and closed-loop autonomous vehicle execution**.
 
 ---
 
-##  Geospatial AI Pipeline
+# Geospatial AI Pipeline
 
-The geospatial component processes remote-sensing imagery before converting the resulting environmental information into a mission goal for the autonomous UAV.
+The geospatial component analyzes environmental imagery and produces candidate regions for UAV mission planning and landing.
 
-### Satellite Data Processing
+The project includes work with:
 
-The project includes processing of Sentinel-2 multispectral imagery using bands such as:
+- Sentinel-2 multispectral imagery
+- OpenEarthMap imagery and semantic labels
+- RGB remote-sensing visualization
+- NDVI vegetation analysis
+- NDWI water analysis
+- land-cover analysis
+- semantic segmentation
+- landing-zone candidate generation
+- landing-zone scoring and selection
+- geospatial mission-goal generation
 
-- B02 — Blue
-- B03 — Green
-- B04 — Red
-- B08 — Near Infrared
+---
 
-These bands are used to generate remote-sensing products including:
+## Sentinel-2 Processing
+
+The geospatial pipeline works with Sentinel-2 bands including:
+
+```text
+B02 — Blue
+B03 — Green
+B04 — Red
+B08 — Near Infrared
+```
+
+These bands support generation and analysis of products such as:
 
 - RGB imagery
-- NDVI
-- NDWI
-- Land-cover representations
+- vegetation information
+- water information
+- land-cover representations
 
-### OpenEarthMap
+NDVI and NDWI provide additional environmental information that can support interpretation of candidate operating regions.
 
-OpenEarthMap imagery and semantic labels are used for land-cover understanding and semantic analysis.
+---
 
-The repository includes utilities for:
+## OpenEarthMap & Semantic Terrain Understanding
 
-- Dataset downloading
-- Dataset validation
-- Region inspection
-- Patch generation
-- Class-coverage checking
-- Dataset visualization
-- Semantic inference
+OpenEarthMap data is used for semantic land-cover analysis.
 
-### Landing-Zone Intelligence
+The geospatial workflow includes utilities for:
 
-The geospatial inference pipeline identifies candidate landing regions and produces a selected landing goal.
+- dataset acquisition
+- dataset validation
+- region inspection
+- image-patch generation
+- class-coverage analysis
+- dataset visualization
+- semantic inference
+- landing-region evaluation
 
-Example outputs are stored in:
+The objective is to move beyond purely geometric navigation by introducing **environmental context before the UAV mission begins**.
+
+---
+
+# Landing-Zone Intelligence
+
+The landing-zone pipeline evaluates semantic predictions and identifies candidate regions suitable for generating a UAV mission goal.
+
+Example outputs are stored under:
 
 ```text
 results/geospatial_v2/
@@ -139,127 +156,191 @@ results/geospatial_v2/
 └── landing_zone_result.json
 ```
 
-This provides the connection between **remote-sensing intelligence** and **physical autonomous navigation**.
+The generated result contains information such as:
+
+- whether the candidate was accepted
+- selected image coordinates
+- predicted semantic class
+- safe-region probability
+- selection score
+- obstacle / boundary clearance
+
+An example stored inference result identifies an accepted **bareland** landing candidate.
 
 ---
 
-##  ROS 2 Autonomous Navigation Stack
+# Geospatial AI → ROS 2 Mission Handoff
 
-The autonomy system is divided into modular ROS 2 packages.
+A key part of GeoNav-AI is converting the result of geospatial inference into a goal that can be used by the robotic autonomy stack.
 
-### `geonav_geospatial_bridge`
+The geospatial bridge reads the selected landing region and converts its image-space coordinates into the local navigation frame.
 
-Connects the geospatial AI pipeline with the robotic navigation system.
-
-Key components:
-
-- `geospatial_ai_mission.py`
-- `landing_goal_publisher.py`
-
-The package converts geospatial landing information into mission goals that can be consumed by the UAV autonomy stack.
-
----
-
-### `geonav_perception`
-
-Handles onboard LiDAR perception.
-
-Key components:
-
-- `lidar_interface.py`
-- `lidar_occupancy_grid.py`
-
-The LiDAR pipeline converts sensor measurements into an occupancy representation that can be used for obstacle-aware navigation.
-
----
-
-### `geonav_planning`
-
-Implements autonomous path planning.
-
-Key components:
-
-- `astar_planner.py`
-- `occupancy_grid_publisher.py`
-
-The planner uses occupancy information and mission goals to generate navigation paths.
-
----
-
-### `geonav_state_estimation`
-
-Implements the state-estimation layer in C++.
-
-Key component:
-
-- `src/ekf_node.cpp`
-
-The package provides an Extended Kalman Filter based state-estimation component for the autonomous navigation pipeline.
-
----
-
-### `geonav_control`
-
-Connects navigation and mission planning with PX4 flight control.
-
-Key components:
-
-- `offboard_control.py`
-- `planned_mission.py`
-- `waypoint_mission.py`
-
-This package handles waypoint missions, planned-path execution, and PX4 offboard command generation.
-
----
-
-### `geonav_telemetry`
-
-Provides vehicle telemetry interfaces for monitoring the state of the UAV during autonomous operation.
-
----
-
-##  Navigation Pipeline
+Conceptually:
 
 ```text
-Geospatial Landing Goal
-          |
-          v
-ROS 2 Mission Interface
-          |
-          +----------------------+
-          |                      |
-          v                      v
-       LiDAR                 IMU / GNSS
-          |                      |
-          v                      v
-   Occupancy Grid              EKF
-          |                      |
-          +----------+-----------+
-                     |
-                     v
-                A* Planner
-                     |
-                     v
-                Planned Path
-                     |
-                     v
-             Mission Controller
-                     |
-                     v
-             PX4 Offboard Control
-                     |
-                     v
-                 PX4 SITL
-                     |
-                     v
-               Gazebo UAV
+Semantic Prediction
+        |
+        v
+Landing Candidate
+        |
+        v
+Pixel Coordinate (u, v)
+        |
+        v
+Pixel → Local Coordinate Conversion
+        |
+        v
+Local North / East Goal
+        |
+        v
+ROS 2 PoseStamped
+        |
+        v
+/geonav/goal
+```
+
+The implemented bridge maps the selected image location into a bounded local North/East operating region before publishing the resulting goal.
+
+Relevant ROS 2 components include:
+
+```text
+geospatial_ai_mission.py
+landing_goal_publisher.py
+```
+
+This provides the interface between **geospatial AI and physical-autonomy software**.
+
+---
+
+# ROS 2 Autonomous Navigation Stack
+
+The autonomous navigation system is implemented as a set of modular ROS 2 packages.
+
+```text
+ros2_ws/src/
+├── geonav_control/
+├── geonav_geospatial_bridge/
+├── geonav_perception/
+├── geonav_planning/
+├── geonav_state_estimation/
+└── geonav_telemetry/
+```
+
+Each package handles a different part of the autonomy pipeline.
+
+---
+
+## LiDAR Perception
+
+The project includes a LiDAR perception pipeline for representing nearby obstacles.
+
+Key components:
+
+```text
+geonav_perception/
+├── lidar_interface.py
+└── lidar_occupancy_grid.py
+```
+
+The perception layer processes LiDAR information for use by the navigation system.
+
+A Gazebo LiDAR test utility is also included:
+
+```text
+perception/test_gz_lidar.py
+```
+
+The perception pipeline supports obstacle-aware navigation by converting sensor information into a representation suitable for planning.
+
+---
+
+# Occupancy Representation
+
+Obstacle information is represented through an occupancy grid used by the path planner.
+
+Relevant components include:
+
+```text
+lidar_occupancy_grid.py
+occupancy_grid_publisher.py
+```
+
+The occupancy representation provides the spatial interface between perception and planning.
+
+Conceptually:
+
+```text
+LiDAR
+  |
+  v
+Range Measurements
+  |
+  v
+Obstacle Processing
+  |
+  v
+Occupancy Representation
+  |
+  v
+A* Path Planner
 ```
 
 ---
 
-##  PX4 + ROS 2 Integration
+# A* Path Planning
 
-PX4 communicates with the ROS 2 autonomy stack through its DDS interface.
+GeoNav-AI includes an implemented A* planning node:
+
+```text
+geonav_planning/astar_planner.py
+```
+
+The planner consumes mission-goal and occupancy information and produces a navigation path.
+
+```text
+/geonav/goal
+      +
+Occupancy Grid
+      |
+      v
+  A* Search
+      |
+      v
+Collision-Aware Path
+      |
+      v
+/geonav/planned_path
+```
+
+The resulting path is passed to the mission-control layer for execution by the UAV.
+
+---
+
+# State Estimation
+
+The repository includes a C++ state-estimation component:
+
+```text
+geonav_state_estimation/src/ekf_node.cpp
+```
+
+The state-estimation layer is designed around an **Extended Kalman Filter (EKF)** architecture for combining vehicle-state information relevant to autonomous navigation.
+
+This part of the project develops experience with:
+
+- state estimation
+- IMU / GNSS information
+- sensor fusion
+- coordinate handling
+- C++ ROS 2 development
+
+State estimation forms the connection between raw vehicle measurements and the navigation/control stack.
+
+---
+
+# PX4 + ROS 2 Integration
+
+PX4 is connected to ROS 2 through the PX4 DDS communication architecture.
 
 ```text
 ROS 2 Humble
@@ -271,89 +352,260 @@ ROS 2 Humble
 Micro XRCE-DDS
       |
       v
-   PX4 SITL
+    PX4 SITL
       |
       v
- Gazebo UAV
+  Gazebo UAV
 ```
 
-PX4 `/fmu/in/*` and `/fmu/out/*` topics provide the communication interface between ROS 2 autonomy nodes and the PX4 flight controller.
-
----
-
-##  Technologies & Tools
-
-### Robotics and Autonomous Systems
-
-- ROS 2 Humble
-- PX4 Autopilot
-- PX4 SITL
-- Gazebo Sim
-- Micro XRCE-DDS
-- `px4_msgs`
-- ROS 2 publisher/subscriber architecture
-- PX4 offboard control
-
-### Perception and Navigation
-
-- LiDAR
-- Occupancy grids
-- A* path planning
-- Waypoint navigation
-- Mission planning
-- Obstacle representation
-
-### State Estimation
-
-- Extended Kalman Filter (EKF)
-- IMU/GNSS state estimation
-- Sensor fusion
-- Coordinate transformations
-- C++ ROS 2 development
-
-### Geospatial AI and Remote Sensing
-
-- Sentinel-2
-- OpenEarthMap
-- Multispectral imagery
-- GeoTIFF processing
-- NDVI
-- NDWI
-- Land-cover analysis
-- Semantic segmentation
-- Landing-zone inference
-- Geospatial mission planning
-
-### Programming and Development
-
-- Python
-- C++
-- Ubuntu Linux
-- Git
-- GitHub
-- CMake
-- colcon
-- ROS 2 package development
-
----
-
-##  Project Structure
+The system communicates through PX4 topics including:
 
 ```text
-geonav_ai/
-├── control/
-├── datasets/
-├── docs/
+/fmu/in/*
+/fmu/out/*
+```
+
+Vehicle state and odometry are received from PX4, while offboard-control commands and trajectory setpoints are transmitted from ROS 2 to the flight controller.
+
+---
+
+# PX4 Offboard Control
+
+The repository contains ROS 2 nodes for PX4 offboard operation.
+
+Key components include:
+
+```text
+geonav_control/
+├── offboard_control.py
+├── waypoint_mission.py
+└── planned_mission.py
+```
+
+The controller publishes:
+
+```text
+/fmu/in/offboard_control_mode
+/fmu/in/trajectory_setpoint
+/fmu/in/vehicle_command
+```
+
+and receives vehicle-state information including:
+
+```text
+/fmu/out/vehicle_odometry
+```
+
+The mission controller handles the conversion of planned ROS 2 waypoints into PX4-compatible trajectory setpoints.
+
+---
+
+# Autonomous Mission Execution
+
+`planned_mission.py` connects the planner to PX4 flight execution.
+
+The node:
+
+- receives the A* generated path
+- converts path points into PX4 NED-compatible commands
+- streams offboard-control messages
+- generates trajectory setpoints
+- requests vehicle arming
+- enters PX4 offboard mode
+- tracks waypoint progress
+- advances through the planned mission
+- requests landing after mission completion
+- monitors vehicle landing state
+
+This creates the execution chain:
+
+```text
+A* Planned Path
+      |
+      v
+ROS 2 Mission Controller
+      |
+      v
+Waypoint Tracking
+      |
+      v
+PX4 Trajectory Setpoints
+      |
+      v
+PX4 Flight Controller
+      |
+      v
+Gazebo UAV Motion
+```
+
+---
+
+# Mid-Flight Replanning
+
+The mission controller also contains support for accepting updated planner paths during flight.
+
+When a new valid path is received, the controller can replace the remaining mission trajectory and begin tracking the updated path.
+
+```text
+Current Mission
+      |
+      v
+Environment / Goal Update
+      |
+      v
+New A* Path
+      |
+      v
+Replan Accepted
+      |
+      v
+Updated Waypoints
+      |
+      v
+PX4 Execution Continues
+```
+
+Replanning is guarded during the landing phase to prevent a new navigation path from replacing a mission once landing has already been requested.
+
+This provides a foundation for more adaptive autonomous navigation as the perception and planning layers continue to develop.
+
+---
+
+# Integrated Mission Flow
+
+The current architecture connects the major subsystems as:
+
+```text
+        GEOSPATIAL INTELLIGENCE
+                 |
+                 v
+      Semantic Terrain Analysis
+                 |
+                 v
+        Landing-Zone Selection
+                 |
+                 v
+         Local Mission Goal
+                 |
+                 v
+             ROS 2
+                 |
+                 v
+        /geonav/goal
+                 |
+        +--------+---------+
+        |                  |
+        v                  v
+   LiDAR / Map       State Estimation
+        |                  |
+        v                  |
+ Occupancy Grid             |
+        |                  |
+        +--------+---------+
+                 |
+                 v
+            A* Planner
+                 |
+                 v
+      /geonav/planned_path
+                 |
+                 v
+        Mission Controller
+                 |
+                 v
+        PX4 Offboard Control
+                 |
+                 v
+             PX4 SITL
+                 |
+                 v
+           Gazebo UAV
+```
+
+---
+
+# System Launcher
+
+The repository contains:
+
+```text
+launch_geonav.sh
+```
+
+for starting the integrated simulation environment.
+
+The launcher coordinates:
+
+1. PX4 SITL + Gazebo
+2. QGroundControl
+3. Micro XRCE-DDS Agent
+4. occupancy-grid node
+5. A* planner
+6. planned-mission controller
+7. system monitoring
+
+The current launcher intentionally **does not automatically trigger the AI-selected mission**.
+
+Instead, the system monitor checks the autonomy stack and PX4 state before the landing goal is manually released to the navigation pipeline.
+
+The geospatial mission can then be initiated through:
+
+```bash
+ros2 run geonav_geospatial_bridge landing_goal_publisher
+```
+
+This separation provides a useful validation step before autonomous mission execution.
+
+---
+
+# Running GeoNav-AI
+
+The integrated launcher can be started using:
+
+```bash
+./launch_geonav.sh
+```
+
+The primary development environment is:
+
+```text
+Ubuntu 22.04 LTS
+ROS 2 Humble
+PX4 Autopilot
+PX4 SITL
+Gazebo Sim
+Micro XRCE-DDS
+px4_msgs
+Python
+C++
+```
+
+Individual ROS 2 nodes can also be launched separately for subsystem development and testing.
+
+---
+
+# Repository Structure
+
+```text
+geonavigation-for-aerial-drone/
+│
 ├── geospatial/
 │   ├── data/
 │   ├── outputs/
-│   └── src/
-├── maps/
-├── models/
+│   ├── src/
+│   ├── inspect_v2.py
+│   └── v2_landing_inference.py
+│
 ├── perception/
-├── planning/
+│   └── test_gz_lidar.py
+│
 ├── results/
 │   └── geospatial_v2/
+│       ├── semantic_prediction.png
+│       ├── landing_candidates.png
+│       ├── landing_selection.png
+│       └── landing_zone_result.json
+│
 ├── ros2_ws/
 │   └── src/
 │       ├── geonav_control/
@@ -362,75 +614,175 @@ geonav_ai/
 │       ├── geonav_planning/
 │       ├── geonav_state_estimation/
 │       └── geonav_telemetry/
+│
+├── GeoNav_AI_Portfolio_Demo.mp4
 ├── launch_geonav.sh
+├── .gitignore
 └── README.md
 ```
 
-Large datasets, virtual environments, trained model weights, ROS build artifacts, and other generated files are intentionally excluded from Git version control.
+Large datasets, ROS build artifacts, virtual environments, external PX4 source trees, and other generated files are intentionally excluded from Git version control.
 
 ---
 
-## Running GeoNav-AI
+# Technologies & Engineering Skills
 
-The project contains a launcher for the integrated system:
+## Robotics & Autonomous Systems
 
-```bash
-./launch_geonav.sh
-```
+- ROS 2 Humble
+- PX4 Autopilot
+- PX4 SITL
+- Gazebo Sim
+- QGroundControl
+- Micro XRCE-DDS
+- `px4_msgs`
+- ROS 2 publisher / subscriber architecture
+- PX4 offboard control
+- autonomous mission execution
+- waypoint navigation
+- mid-flight replanning
 
-Individual ROS 2 packages and nodes can also be launched independently for development and testing.
+## Perception & Navigation
 
-### Development Environment
+- LiDAR
+- occupancy grids
+- obstacle representation
+- A* path planning
+- waypoint planning
+- autonomous path execution
+- mission planning
+
+## State Estimation
+
+- Extended Kalman Filter
+- IMU / GNSS state information
+- sensor fusion
+- coordinate transformations
+- C++ ROS 2 development
+
+## Geospatial AI & Remote Sensing
+
+- Sentinel-2
+- OpenEarthMap
+- multispectral imagery
+- GeoTIFF processing
+- NDVI
+- NDWI
+- land-cover analysis
+- semantic segmentation
+- landing-zone inference
+- geospatial mission planning
+
+## Programming & Development
+
+- Python
+- C++
+- NumPy
+- ROS 2
+- Linux / Ubuntu
+- Git / GitHub
+- CMake
+- colcon
+- Bash
+- ROS 2 CLI
+
+---
+
+# Relevance to Physical AI & ADAS
+
+Although GeoNav-AI uses a UAV as its current simulation platform, many of the engineering problems explored by the project are shared across autonomous robotic and intelligent-vehicle systems.
+
+The project develops transferable experience in:
 
 ```text
-Ubuntu 22.04 LTS
-ROS 2 Humble
-PX4 Autopilot / PX4 SITL
-Gazebo Sim
-Python
-C++
+Environment Perception
+        ↓
+State Estimation
+        ↓
+World Representation
+        ↓
+Path Planning
+        ↓
+Mission / Motion Decisions
+        ↓
+Closed-Loop Vehicle Execution
+        ↓
+Updated Sensor Information
 ```
 
----
-
-##  Current Outputs
-
-The repository contains generated outputs from the geospatial pipeline, including:
-
-- Sentinel RGB visualization
-- NDVI map
-- NDWI map
-- Land-cover visualization
-- OpenEarthMap dataset visualizations
-- Semantic prediction
-- Landing-zone candidates
-- Selected landing region
-
-These outputs demonstrate the geospatial perception and landing-zone selection stages of the system.
-
----
-
-## What This Project Demonstrates
-
-GeoNav-AI demonstrates an autonomous-system pipeline spanning:
-
-**Geospatial AI → Perception → Sensor Fusion → State Estimation → Path Planning → Flight Control**
-
-The project develops skills relevant to:
+These concepts are relevant to areas including:
 
 - Physical AI
-- Robotics AI
-- Autonomous Systems
-- UAV Autonomy
-- ADAS-style perception and planning
-- Sensor Fusion
-- State Estimation
-- Autonomous Path Planning
-- Geospatial AI
-- Satellite Computer Vision
-- Remote Sensing
-- ROS 2
-- PX4 flight-control integration
-- Python and C++ robotics development
+- autonomous robotics
+- UAV autonomy
+- autonomous vehicles
+- ADAS perception and planning
+- sensor fusion
+- localization and state estimation
+- motion and path planning
+- intelligent vehicle control
+
+GeoNav-AI is **not presented as an automotive ADAS implementation**. Instead, it demonstrates autonomy-stack concepts that transfer across aerial, ground, and other robotic vehicle platforms.
 
 ---
+
+# What This Project Demonstrates
+
+GeoNav-AI brings together several traditionally separate engineering areas:
+
+**Satellite / Geospatial Intelligence**
+
+↓
+
+**Semantic Environmental Understanding**
+
+↓
+
+**Robotic Perception & State Estimation**
+
+↓
+
+**Autonomous Path Planning**
+
+↓
+
+**PX4 Flight Control**
+
+↓
+
+**Closed-Loop Vehicle Execution**
+
+The project is intended to explore the interface between **AI-based environmental understanding and autonomous machines operating in the physical world**.
+
+---
+
+# Current Scope
+
+GeoNav-AI is currently a **simulation-based development project**.
+
+The repository demonstrates software integration and autonomous navigation using PX4 SITL and Gazebo.
+
+It does not currently claim:
+
+- deployment on a physical UAV
+- production-ready flight autonomy
+- safety-certified navigation
+- automotive ADAS deployment
+- fully validated real-world landing-zone safety
+- complete real-world perception robustness
+
+Future development can extend the system toward more complex perception, dynamic obstacle handling, improved planning, and hardware-based validation.
+
+---
+
+# Project Direction
+
+GeoNav-AI is being developed as an exploration of:
+
+**Geospatial AI + Robotics + Autonomous Systems + Physical AI**
+
+The long-term engineering question behind the project is:
+
+> How can large-scale environmental intelligence be converted into useful decisions for an autonomous machine operating locally in the physical world?
+
+The current UAV implementation provides a simulation platform for investigating that connection.
